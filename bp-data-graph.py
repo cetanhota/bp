@@ -1,14 +1,18 @@
+#!/usr/bin/env python3
+# -*- coding: cp1252 -*-
+
 import sys
 import matplotlib.pyplot as plt
 import mysql.connector
 import pandas as pd
 import numpy as np
+from getpass import getpass
 
 mydb = mysql.connector.connect(
   host="pi8gb.local",
-  user="",
+  user=input("Enter User: "),
+  password=getpass("Enter Password: "),
   auth_plugin='mysql_native_password',
-  password="",
   database="health"
 )
 mycursor = mydb.cursor()
