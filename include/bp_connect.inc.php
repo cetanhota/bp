@@ -1,5 +1,5 @@
 <?php
-include ('../include/private.inc.php');
+include ('include/private.inc.php');
 $servername = "";
 $username = "";
 $dbname = "";

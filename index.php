@@ -1,10 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-   <head>
-      <title>BP Tracker</title>
-   </head>
-   <body>
-         <h1>Input Blood Pressure</h1>
+<?php 
+include ('include/bpstyle.php');
+include ('include/bp_header.inc.php'); 
+?>
+<h2>Input Blood Pressure</h2>
+   <table align="center">
+      <td vertical-align: middle>
          <form action="insert.php" method="post">
 <p>
                <label for="sys">SYS:</label>
@@ -22,9 +22,9 @@
    	       <label for="comments">Comments:</label>
 	       <input type="text" name="comments" id="comments">	 
 	    </p>            
-            <input type="submit" value="Submit">
+            <center><input type="submit" value="Submit"  class="f_button"></center>
          </form>
-       <?php include ('include/bp_footer.inc.php'); ?>
-   </body>
-</html>
-
+      </td>   
+   </table>
+<br>
+<?php include ('include/bp_footer.inc.php'); ?>
