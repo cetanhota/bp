@@ -3,7 +3,7 @@ include ('include/bpstyle.php');
 include ('include/bp_header.inc.php'); 
 ?>
 <h2>Input Blood Pressure</h2>
-   <table align="center">
+   <table align="center" class=shadow>
       <td vertical-align: middle>
          <form action="insert.php" method="post">
 <p>

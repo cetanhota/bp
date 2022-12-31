@@ -9,9 +9,9 @@ import numpy as np
 from getpass import getpass
 
 mydb = mysql.connector.connect(
-  host="pi8gb.local",
-  user=input("Enter User: "),
-  password=getpass("Enter Password: "),
+  host="",
+  user="",
+  password="",
   auth_plugin='mysql_native_password',
   database="health"
 )
@@ -25,12 +25,13 @@ df.columns=['SYS','DIA','Pulse']
 ts = ['ts']
 df.plot(xlabel='')
 
-plt.title('\nBP 90 mins after meds.\n')
+##plt.title('\nBP 90 mins after meds.\n')
 plt.xticks(rotation = 45)
 plt.grid(True)
 plt.legend()
+##plt.show()
 plt.tight_layout()
-plt.show()
+plt.savefig('bp.png')
 
 mycursor.close()
 mydb.close()

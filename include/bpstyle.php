@@ -18,6 +18,7 @@ body {
     -webkit-transition-duration: 0.4s; /* Safari */
     transition-duration: 0.4s;
     border-radius: 25px;
+    box-shadow: 2px 2px 10px 2px rgba(0,0,0,.8);
 }
 
 .f_button:hover {
@@ -57,5 +58,9 @@ hr {
    height: 2px;
    background-color: #000000;
    border: none;
+}
+
+.shadow {
+    box-shadow: 5px 5px 10px 2px rgba(0,0,0,.8);
 }
 </style>

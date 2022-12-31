@@ -9,7 +9,7 @@ $result = $conn->query($sql);
 if(mysqli_query($conn, $sql)) 
 {
     echo "<h2>Blood Pressure Report</h2>";
-    echo "<table align=center>";
+    echo "<table align=center class='shadow'>";
     echo "<tr>";
     echo "<th>SYS</th>";
     echo "<th>DIA</th>";
@@ -23,9 +23,9 @@ if(mysqli_query($conn, $sql))
                   <td>" . $row["sys"]. "</td>
                   <td>" . $row["pulse"]. "</td>
                   <td>" . $row["comments"]. "</td>
-                  <td>" . $row["Date"]. "</td>
-             </tr>";
+                  <td>" . $row["Date"]. "</td>";
     }
+    echo "</tr>";
     echo "</table>";
     echo "<br>";
 }
@@ -37,5 +37,7 @@ echo "ERROR: $sql. " . mysqli_error($conn);
 
 // Close connection
 mysqli_close($conn);
+shell_exec('/var/www/html/save-bp-graph.py');
+echo "<center><img src='bp.png?m=' . filemtime('image.jpg') . 'alt='bp-graph' class='shadow'></center>";
 include ('include/bp_footer.inc.php'); 
 ?>
