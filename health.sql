@@ -27,6 +27,7 @@ CREATE TABLE `bp` (
   `sys` int DEFAULT NULL,
   `dia` int DEFAULT NULL,
   `pulse` int DEFAULT NULL,
+  `spo2` int DEFAULT NULL,
   `comments` varchar(45) DEFAULT NULL,
   `ts` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),

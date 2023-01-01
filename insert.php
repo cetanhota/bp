@@ -7,17 +7,18 @@ include ('include/bp_connect.inc.php');
 $sys =  $_REQUEST['sys'];
 $dia = $_REQUEST['dia'];
 $pulse =  $_REQUEST['pulse'];
+$spo2 = $_REQUEST['spo2'];
 $comments = $_REQUEST['comments'];
          
 // Performing insert query execution
 // here our table name is college
-$sql = "INSERT INTO bp (sys,dia,pulse,comments) VALUES ($sys,$dia,$pulse,'$comments')";
+$sql = "INSERT INTO bp (sys,dia,pulse,spo2,comments) VALUES ($sys,$dia,$pulse,$spo2,'$comments')";
 
 if(mysqli_query($conn, $sql)) 
 {
     echo "<h2>Insert Complete</h2>";
     echo "<center>";
-    echo nl2br("DIA: $sys\n SYS: $dia\n " . "Pulse: $pulse\n Comments: $comments");
+    echo nl2br("DIA: $sys\n SYS: $dia\n " . "SpO2: $spo2\n Pulse: $pulse\n Comments: $comments");
 }
 else 
 {

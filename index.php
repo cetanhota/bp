@@ -19,6 +19,10 @@ include ('include/bp_header.inc.php');
                <input type="text" name="pulse" id="pulse">
 	    </p>
 <p>
+               <label for="spo2">SpO2:</label>
+               <input type="text" name="spo2" id="spo2">
+       </p>
+<p>
    	       <label for="comments">Comments:</label>
 	       <input type="text" name="comments" id="comments">	 
 	    </p>            

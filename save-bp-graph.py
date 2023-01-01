@@ -9,7 +9,7 @@ import numpy as np
 from getpass import getpass
 
 mydb = mysql.connector.connect(
-  host="",
+  host="pi8gb.local",
   user="",
   password="",
   auth_plugin='mysql_native_password',
