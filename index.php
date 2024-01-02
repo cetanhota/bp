@@ -1,11 +1,23 @@
 <?php 
 include ('include/bpstyle.php');
 include ('include/bp_header.inc.php'); 
+include ('include/bp_connect.inc.php'); 
+
 ?>
-<h2>Input Blood Pressure</h2>
+<h2>Input Vitals</h2>
    <table align="center" class=shadow>
       <td vertical-align: middle>
          <form action="insert.php" method="post">
+         <select id="fname" name="fname">
+         <?php
+            echo "<option value='select'>Select a Patient</option>";
+            $sql = "select pid,fname from patient";
+            $result = $conn->query($sql);
+            while($row = $result->fetch_assoc()) {
+               echo "<option>" . $row['fname'] . "</option>";
+            }
+         ?>
+         </select>
 <p>
                <label for="sys">SYS:</label>
                <input type="text" name="sys" id="sys">

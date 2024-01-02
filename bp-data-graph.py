@@ -15,9 +15,11 @@ mydb = mysql.connector.connect(
   auth_plugin='mysql_native_password',
   database="health"
 )
+
 mycursor = mydb.cursor()
-sql = "select sys,dia,pulse,DATE(ts) from bp order by ts asc;"
-mycursor.execute(sql)
+sql = "select sys,dia,pulse,DATE(ts) from vitals where pid=%s order by ts asc;"
+PID = ("1")
+mycursor.execute(sql, PID)
 myresults = mycursor.fetchall()
 
 df = pd.DataFrame(myresults, columns=['sys', 'dia', 'bp', 'ts']).set_index('ts')
@@ -34,3 +36,5 @@ plt.show()
 
 mycursor.close()
 mydb.close()
+
+print (PID)
