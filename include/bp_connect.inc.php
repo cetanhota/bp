@@ -1,8 +1,12 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 include ('include/private.inc.php');
-$servername = "";
-$username = "";
-$dbname = "";
+$servername = "pi16gb.local";
+$username = "weather";
+$dbname = "health";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);

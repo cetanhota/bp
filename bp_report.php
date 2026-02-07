@@ -1,43 +1,151 @@
 <?php
 include ('include/bpstyle.php');
 include ('include/bp_header.inc.php');
-include ('include/bp_connect.inc.php'); 
+include ('include/bp_connect.inc.php');
 
-$sql = "select dia,sys,pulse,comments,ts as 'Date' from bp order by id desc limit 10;";
+// SQL query for latest 10 readings
+$sql = "SELECT sys, dia, pulse, spo2, comments, ts AS Date
+        FROM vitals
+        ORDER BY id DESC
+        LIMIT 10";
+
 $result = $conn->query($sql);
 
-if(mysqli_query($conn, $sql)) 
-{
-    echo "<h2>Blood Pressure Report</h2>";
-    echo "<table align=center class='shadow'>";
-    echo "<tr>";
-    echo "<th>SYS</th>";
-    echo "<th>DIA</th>";
-    echo "<th>Pulse</th>";
-    echo "<th>Comments</th>";
-    echo "<th>Date</th>";
-    echo "</tr>";
-    // output data of each row
+// Prepare arrays for charts
+$labels = [];
+$sys = [];
+$dia = [];
+$pulse = [];
+
+if ($result) {
     while($row = $result->fetch_assoc()) {
-        echo "<tr><td>" . $row["dia"]. "</td>
-                  <td>" . $row["sys"]. "</td>
-                  <td>" . $row["pulse"]. "</td>
-                  <td>" . $row["comments"]. "</td>
-                  <td>" . $row["Date"]. "</td>";
+        $labels[] = $row["Date"];
+        $sys[] = $row["sys"];
+        $dia[] = $row["dia"];
+        $pulse[] = $row["pulse"];
     }
-    echo "</tr>";
-    echo "</table>";
-    echo "<br>";
-}
-else 
-{
-echo "ERROR: $sql. " . mysqli_error($conn);
+    // Reset pointer for table output
+    $result->data_seek(0);
+} else {
+    echo "ERROR: " . $conn->error;
 }
 
-
-// Close connection
-mysqli_close($conn);
-shell_exec('/var/www/html/save-bp-graph.py');
-echo "<center><img src='bp.png?m=' . filemtime('image.jpg') . 'alt='bp-graph' class='shadow'></center>";
-include ('include/bp_footer.inc.php'); 
 ?>
+
+<h2>Blood Pressure Report</h2>
+
+<!-- Table -->
+<table align='center' class='shadow'>
+<tr>
+    <th>BP</th>
+    <th>Pulse</th>
+    <th>SpO2</th>
+    <th>Comments</th>
+    <th>Date</th>
+</tr>
+
+<?php
+if ($result && $result->num_rows > 0) {
+    while($row = $result->fetch_assoc()) {
+        echo "<tr>";
+        echo "<td>".$row["sys"]."/".$row["dia"]."</td>";
+        echo "<td>".$row["pulse"]."</td>";
+        echo "<td>".$row["spo2"]."%</td>";
+        echo "<td>".$row["comments"]."</td>";
+        echo "<td>".$row["Date"]."</td>";
+        echo "</tr>";
+    }
+} else {
+    echo "<tr><td colspan='5'>No readings found.</td></tr>";
+}
+?>
+
+</table>
+<br>
+
+<!-- Charts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<center>
+<h3>Blood Pressure Trend</h3>
+<div style="width: 900px; height: 500px; margin:auto;">
+        <canvas id="bpChart"></canvas>
+</div>
+
+<h3>Pulse Trend</h3>
+<div style="width: 900px; height: 500px; margin:auto;">
+	<canvas id="pulseChart"></canvas>
+</div>
+</center>
+
+<script>
+const labels = <?php echo json_encode($labels); ?>;
+const sysData = <?php echo json_encode($sys); ?>;
+const diaData = <?php echo json_encode($dia); ?>;
+const pulseData = <?php echo json_encode($pulse); ?>;
+
+// Blood Pressure Chart
+new Chart(document.getElementById('bpChart'), {
+    type: 'line',
+    data: {
+        labels: labels.reverse(), // oldest on left
+        datasets: [
+            {
+                label: 'Systolic',
+                data: sysData.reverse(),
+                borderColor: 'red',
+                fill: false,
+                tension: 0.1
+            },
+            {
+                label: 'Diastolic',
+                data: diaData.reverse(),
+                borderColor: 'blue',
+                fill: false,
+                tension: 0.1
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { position: 'top' }
+        },
+        scales: {
+            y: { beginAtZero: false }
+        }
+    }
+});
+
+// Pulse Chart
+new Chart(document.getElementById('pulseChart'), {
+    type: 'line',
+    data: {
+        labels: labels.reverse(),
+        datasets: [
+            {
+                label: 'Pulse',
+                data: pulseData.reverse(),
+                borderColor: 'green',
+                fill: false,
+                tension: 0.1
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { position: 'top' }
+        },
+        scales: {
+            y: { beginAtZero: false }
+        }
+    }
+});
+</script>
+<br>
+<?php
+$conn->close();
+include ('include/bp_footer.inc.php');
+?>
+
