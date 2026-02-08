@@ -8,6 +8,7 @@ $patients = $conn->query("SELECT patient_id, fname, lname FROM patient ORDER BY 
 ?>
 
 <h2>Input Blood Pressure</h2>
+<center>
 
 <table align="center" class="shadow">
 <td style="vertical-align: middle;">

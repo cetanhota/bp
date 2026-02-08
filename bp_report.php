@@ -69,6 +69,7 @@ if(!empty($selected_patient)):
     }
 ?>
 
+<center>
 <!-- Table -->
 <table align='center' class='shadow'>
 <tr>

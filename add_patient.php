@@ -31,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ?>
 
 <h2>Add New Patient</h2>
-
+<center>
 <table align="center" class="shadow">
 <td style="vertical-align: middle;">
 
