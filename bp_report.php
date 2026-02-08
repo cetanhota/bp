@@ -3,36 +3,71 @@ include ('include/bpstyle.php');
 include ('include/bp_header.inc.php');
 include ('include/bp_connect.inc.php');
 
-// SQL query for latest 10 readings
-$sql = "SELECT sys, dia, pulse, spo2, comments, ts AS Date
-        FROM vitals
-        ORDER BY id DESC
-        LIMIT 10";
+// ---------- Fetch patients for dropdown ----------
+$patients = $conn->query("SELECT patient_id, fname, lname FROM patient ORDER BY lname, fname");
 
-$result = $conn->query($sql);
-
-// Prepare arrays for charts
-$labels = [];
-$sys = [];
-$dia = [];
-$pulse = [];
-
-if ($result) {
-    while($row = $result->fetch_assoc()) {
-        $labels[] = $row["Date"];
-        $sys[] = $row["sys"];
-        $dia[] = $row["dia"];
-        $pulse[] = $row["pulse"];
-    }
-    // Reset pointer for table output
-    $result->data_seek(0);
-} else {
-    echo "ERROR: " . $conn->error;
-}
-
+// ---------- Get selected patient ----------
+$selected_patient = $_GET['patient_id'] ?? '';
 ?>
 
 <h2>Blood Pressure Report</h2>
+
+<!-- Patient Selector Form -->
+<form method="GET" style="text-align:center; margin-bottom:20px;">
+    <label for="patient_id">Select Patient:</label>
+    <select name="patient_id" id="patient_id" required onchange="this.form.submit()">
+        <option value="">-- Select Patient --</option>
+        <?php
+        if ($patients && $patients->num_rows > 0) {
+            while($row = $patients->fetch_assoc()) {
+                $selected = ($row['patient_id'] == $selected_patient) ? 'selected' : '';
+                echo "<option value='".$row['patient_id']."' $selected>".$row['lname'].", ".$row['fname']."</option>";
+            }
+        }
+        ?>
+    </select>
+</form>
+
+<?php
+if(!empty($selected_patient)):
+
+    // ---------- SQL query ----------
+    $sql = "SELECT sys, dia, pulse, spo2, comments, ts AS Date
+            FROM vitals
+            WHERE pid = ".$conn->real_escape_string($selected_patient)."
+            ORDER BY id DESC
+            LIMIT 10";
+
+    $result = $conn->query($sql);
+
+    // Prepare arrays for charts
+    $labels = [];
+    $sys = [];
+    $dia = [];
+    $pulse = [];
+
+    if ($result) {
+        while($row = $result->fetch_assoc()) {
+            $labels[] = $row["Date"];
+            $sys[] = $row["sys"];
+            $dia[] = $row["dia"];
+            $pulse[] = $row["pulse"];
+        }
+        $result->data_seek(0);
+    } else {
+        echo "ERROR: " . $conn->error;
+    }
+
+    // Function to get BP category color
+    function bp_color($systolic, $diastolic) {
+        if($systolic < 120 && $diastolic < 80) return "green";            // Normal
+        if($systolic >= 120 && $systolic <= 129 && $diastolic < 80) return "yellow"; // Elevated
+        if(($systolic >= 130 && $systolic <= 139) || ($diastolic >= 80 && $diastolic <= 89)) return "orange"; // Stage 1
+        if(($systolic >= 140 && $systolic <= 179) || ($diastolic >= 90 && $diastolic <= 119)) return "red"; // Stage 2
+        if($systolic >= 180 || $diastolic >= 120) return "purple";       // Crisis
+        return "white";
+    }
+?>
 
 <!-- Table -->
 <table align='center' class='shadow'>
@@ -47,8 +82,9 @@ if ($result) {
 <?php
 if ($result && $result->num_rows > 0) {
     while($row = $result->fetch_assoc()) {
+        $color = bp_color($row["sys"], $row["dia"]);
         echo "<tr>";
-        echo "<td>".$row["sys"]."/".$row["dia"]."</td>";
+        echo "<td style='background-color: $color; color: black;'>".$row["sys"]."/".$row["dia"]."</td>";
         echo "<td>".$row["pulse"]."</td>";
         echo "<td>".$row["spo2"]."%</td>";
         echo "<td>".$row["comments"]."</td>";
@@ -56,10 +92,9 @@ if ($result && $result->num_rows > 0) {
         echo "</tr>";
     }
 } else {
-    echo "<tr><td colspan='5'>No readings found.</td></tr>";
+    echo "<tr><td colspan='5'>No readings found for this patient.</td></tr>";
 }
 ?>
-
 </table>
 <br>
 
@@ -88,7 +123,7 @@ const pulseData = <?php echo json_encode($pulse); ?>;
 new Chart(document.getElementById('bpChart'), {
     type: 'line',
     data: {
-        labels: labels.reverse(), // oldest on left
+        labels: labels.reverse(),
         datasets: [
             {
                 label: 'Systolic',
@@ -111,9 +146,7 @@ new Chart(document.getElementById('bpChart'), {
         plugins: {
             legend: { position: 'top' }
         },
-        scales: {
-            y: { beginAtZero: false }
-        }
+        scales: { y: { beginAtZero: false } }
     }
 });
 
@@ -137,14 +170,13 @@ new Chart(document.getElementById('pulseChart'), {
         plugins: {
             legend: { position: 'top' }
         },
-        scales: {
-            y: { beginAtZero: false }
-        }
+        scales: { y: { beginAtZero: false } }
     }
 });
 </script>
-<br>
+
 <?php
+endif; // end if patient selected
 $conn->close();
 include ('include/bp_footer.inc.php');
 ?>

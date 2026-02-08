@@ -3,31 +3,48 @@ include ('include/bpstyle.php');
 include ('include/bp_header.inc.php');
 include ('include/bp_connect.inc.php');
 
-$sys = intval($_POST['sys']);
-$dia = intval($_POST['dia']);
-$pulse = intval($_POST['pulse']);
-$spo2 = intval($_POST['spo2']);
-$comments = trim($_POST['comments']);
+// Get POST data
+$patient_id = $_POST['patient_id'];
+$sys        = $_POST['sys'];
+$dia        = $_POST['dia'];
+$pulse      = $_POST['pulse'];
+$spo2       = $_POST['spo2'];
+$comments   = $_POST['comments'];
 
+// Validate required fields
+if(empty($patient_id) || empty($sys) || empty($dia)){
+    die("Error: Patient, SYS, and DIA are required.");
+}
+
+// Prepare statement
 $stmt = $conn->prepare(
-    "INSERT INTO vitals (sys,dia,pulse,spo2,comments)
-     VALUES (?, ?, ?, ?, ?)"
+    "INSERT INTO vitals (pid, sys, dia, pulse, spo2, comments)
+     VALUES (?,?,?,?,?,?)"
 );
 
-$stmt->bind_param("iiiss", $sys, $dia, $pulse, $spo2, $comments);
+if(!$stmt){
+    die("Prepare failed: ".$conn->error);
+}
 
-if($stmt->execute()) {
-    echo "<h2>Insert Complete</h2>";
-    echo "<div style='text-align:center;'>";
-    echo nl2br("SYS: $sys\n DIA: $dia\n Pulse: $pulse\n Oxygen Saturation: $spo2\n Comments: $comments");
-    echo "</div>";
-} else {
-    echo "ERROR: " . $stmt->error;
+// Bind parameters: i = integer, s = string
+$stmt->bind_param(
+    "iiiiis",
+    $patient_id,
+    $sys,
+    $dia,
+    $pulse,
+    $spo2,
+    $comments
+);
+
+// Execute
+if($stmt->execute()){
+    echo "<h2>✅ Vitals Inserted Successfully</h2>";
+}else{
+    echo "ERROR: ".$stmt->error;
 }
 
 $stmt->close();
 $conn->close();
-
-include ('include/bp_footer.inc.php');
 ?>
 
