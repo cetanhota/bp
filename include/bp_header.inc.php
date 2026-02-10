@@ -46,10 +46,31 @@
             margin: 20px auto;
         }
     </style>
+
+<script>
+function toggleDark() {
+    document.body.classList.toggle('dark');
+    localStorage.setItem('darkMode',
+        document.body.classList.contains('dark'));
+}
+
+window.onload = function() {
+    if(localStorage.getItem('darkMode') === 'true') {
+        document.body.classList.add('dark');
+    }
+}
+</script>
+
+
 </head>
 <body>
 
     <h1>Health Vitals Tracker</h1>
+
+    <button onclick="toggleDark()" class="f_button">
+    🌙 Dark Mode Toggle
+    </button>
+    <br><br>
 
     <div>
         <a href="bp_input.php" class="f_button">Record</a>

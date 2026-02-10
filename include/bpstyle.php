@@ -1,4 +1,5 @@
 <style>
+
 /* ----------- Body & Layout ----------- */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -7,6 +8,12 @@ body {
     background-attachment: fixed;
     margin: 0;
     padding: 0;
+}
+
+/* 🌙 DARK MODE */
+body.dark {
+    background-color: #121212;
+    color: #eee;
 }
 
 /* Centered container for forms and tables */
@@ -23,6 +30,13 @@ h1, h2, h3 {
     text-align: center;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
     margin-bottom: 20px;
+}
+
+body.dark h1,
+body.dark h2,
+body.dark h3 {
+    color: #ff7b5c;
+    text-shadow: none;
 }
 
 /* ----------- Buttons ----------- */
@@ -45,6 +59,11 @@ h1, h2, h3 {
     transform: translateY(-2px);
 }
 
+body.dark .f_button {
+    background-color: #ff7b5c;
+    color: #000;
+}
+
 /* ----------- Forms ----------- */
 form p {
     margin: 10px 0;
@@ -58,22 +77,34 @@ form label {
     width: 180px;
 }
 
-form input, form select {
+form input,
+form select {
     padding: 8px 12px;
     border-radius: 8px;
     border: 1px solid #ccc;
     flex: 1;
 }
 
+body.dark form input,
+body.dark form select {
+    background-color: #1e1e1e;
+    color: #eee;
+    border: 1px solid #555;
+}
+
 /* ----------- Tables ----------- */
 table {
-    width: 100%;
+    width: 80%;
     border-collapse: collapse;
     margin: 20px 0;
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     background-color: #fff;
+}
+
+body.dark table {
+    background-color: #1e1e1e;
 }
 
 th, td {
@@ -86,16 +117,32 @@ th {
     color: #fff;
 }
 
+body.dark th {
+    background-color: #ff7b5c;
+    color: #000;
+}
+
 tr:nth-child(even) {
     background-color: #f9f9f9;
 }
 
+body.dark tr:nth-child(even) {
+    background-color: #2a2a2a;
+}
+
 /* BP Color-coding classes */
-.bp-normal { background-color: #c6f6c6; }      /* green */
-.bp-elevated { background-color: #fff8b0; }    /* yellow */
-.bp-stage1 { background-color: #ffd699; }      /* orange */
-.bp-stage2 { background-color: #ff9999; }      /* red */
-.bp-crisis { background-color: #c299ff; color: #000; } /* purple */
+.bp-normal { background-color: #c6f6c6; }
+.bp-elevated { background-color: #fff8b0; }
+.bp-stage1 { background-color: #ffd699; }
+.bp-stage2 { background-color: #ff9999; }
+.bp-crisis { background-color: #c299ff; color: #000; }
+
+/* DARK MODE BP tweaks */
+body.dark .bp-normal { background-color: #1f5e2a; }
+body.dark .bp-elevated { background-color: #6a5c00; }
+body.dark .bp-stage1 { background-color: #6a3f00; }
+body.dark .bp-stage2 { background-color: #5a1f1f; }
+body.dark .bp-crisis { background-color: #4b2a7a; color:#fff; }
 
 /* ----------- Graph Cards ----------- */
 .graphshadow {
@@ -109,6 +156,10 @@ tr:nth-child(even) {
     text-align: center;
 }
 
+body.dark .graphshadow {
+    background-color: #1e1e1e;
+}
+
 /* ----------- Misc ----------- */
 select:invalid {
     color: #999;
@@ -120,5 +171,10 @@ hr {
     border: none;
     margin: 20px 0;
 }
+
+body.dark hr {
+    background-color: #ff7b5c;
+}
+
 </style>
 
